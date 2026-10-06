@@ -1,0 +1,463 @@
+/* ============================================================================
+   RSVP — Esau & Gala | Boda 20 de Marzo 2027
+   Variables tomadas del sistema de diseño de Styles.css
+============================================================================ */
+
+/* ── Design Tokens (copiados de Styles.css :root) ──────────────────────────── */
+:root {
+  /* Color Palette - Rustic Wedding Theme */
+  --color-primary:        #c65a2e;
+  --color-primary-light:  #d4704a;
+  --color-primary-dark:   #a84a1e;
+  --color-secondary:      #5a3825;
+  --color-secondary-light:#7a5035;
+  --color-secondary-dark: #3a2817;
+  --color-accent:         #d4af7a;
+  --color-accent-light:   #e8d9c5;
+  --color-accent-dark:    #b89860;
+
+  /* Neutral */
+  --color-white:     #ffffff;
+  --color-gray-100:  #f8f9fa;
+  --color-gray-200:  #e9ecef;
+  --color-gray-500:  #adb5bd;
+  --color-gray-600:  #6c757d;
+  --color-gray-900:  #212529;
+
+  /* Semantic */
+  --color-error: #dc3545;
+
+  /* Typography */
+  --font-family-primary: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: 'Great Vibes', cursive;
+
+  /* Font Sizes - Fluid */
+  --font-size-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --font-size-sm:   clamp(0.875rem, 0.8rem  + 0.375vw, 1rem);
+  --font-size-base: clamp(1rem,     0.9rem  + 0.5vw,   1.125rem);
+  --font-size-md:   clamp(1.125rem, 1rem    + 0.625vw, 1.25rem);
+  --font-size-xl:   clamp(1.5rem,   1.3rem  + 1vw,     2rem);
+  --font-size-2xl:  clamp(2rem,     1.7rem  + 1.5vw,   3rem);
+  --font-size-3xl:  clamp(2.5rem,   2rem    + 2.5vw,   4rem);
+  --font-size-4xl:  clamp(3rem,     2.5rem  + 2.5vw,   5rem);
+
+  /* Font Weights */
+  --font-weight-light:    300;
+  --font-weight-normal:   400;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  /* Line Heights */
+  --line-height-tight:   1.2;
+  --line-height-normal:  1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing */
+  --spacing-xs:  0.25rem;
+  --spacing-sm:  0.5rem;
+  --spacing-md:  1rem;
+  --spacing-lg:  1.5rem;
+  --spacing-xl:  2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+  --spacing-5xl: 8rem;
+
+  /* Border Radius */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   1rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset mínimo ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-gray-100);
+  background-image:
+    radial-gradient(ellipse at top,    rgba(198, 90, 46, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(212,175,122, 0.08) 0%, transparent 60%);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  color: var(--color-gray-900);
+  line-height: var(--line-height-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-4xl) var(--spacing-md) var(--spacing-5xl);
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.rsvp-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.rsvp-header__eyebrow {
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.rsvp-header__names {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-4xl);
+  color: var(--color-secondary);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-xs);
+}
+
+.rsvp-header__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-secondary-light);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ── Divider ───────────────────────────────────────────────────────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) auto;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+}
+
+.divider::before {
+  background: linear-gradient(90deg, transparent, var(--color-accent));
+}
+
+.divider::after {
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
+.divider__flower {
+  color: var(--color-accent);
+  font-size: 14px;
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-accent-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea decorativa superior */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.card__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-light);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* ── Sections visibility ───────────────────────────────────────────────────── */
+#search-section  { display: block; }
+#rsvp-section    { display: none; }
+#success-section { display: none; text-align: center; }
+
+/* ── Form fields ───────────────────────────────────────────────────────────── */
+.field-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.field-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  padding: 0.7rem var(--spacing-md);
+  border: 1.5px solid var(--color-accent-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-primary);
+  color: var(--color-secondary);
+  background: var(--color-gray-100);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  appearance: none;
+}
+
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(198, 90, 46, 0.12);
+  background: var(--color-white);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23c65a2e' stroke-width='1.5' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  padding-right: var(--spacing-3xl);
+  cursor: pointer;
+}
+
+/* ── Radio group ───────────────────────────────────────────────────────────── */
+.radio-group {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-sm);
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  color: var(--color-secondary);
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+}
+
+.radio-group input[type="radio"] {
+  accent-color: var(--color-primary);
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+.btn-buscar {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  padding: 0.8rem var(--spacing-lg);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-buscar:hover {
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-buscar:active { transform: translateY(0); }
+
+.btn-confirmar {
+  width: 100%;
+  padding: 0.9rem var(--spacing-lg);
+  background: var(--color-secondary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: var(--spacing-sm);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-confirmar:hover {
+  background: var(--color-secondary-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-confirmar:active  { transform: translateY(0); }
+.btn-confirmar:disabled {
+  background: var(--color-accent);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-volver {
+  margin-top: var(--spacing-lg);
+  display: inline-block;
+  padding: 0.6rem var(--spacing-lg);
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-volver:hover { background: rgba(198, 90, 46, 0.08); }
+
+/* ── RSVP family info ──────────────────────────────────────────────────────── */
+.familia-nombre {
+  text-align: center;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-xs);
+  line-height: var(--line-height-tight);
+}
+
+.familia-detalle {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ── Success screen ────────────────────────────────────────────────────────── */
+.check-icon {
+  font-size: 52px;
+  margin-bottom: var(--spacing-md);
+  display: block;
+}
+
+#success-section .card__title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+#success-section p {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  line-height: var(--line-height-relaxed);
+}
+
+/* ── Error message ─────────────────────────────────────────────────────────── */
+.error-msg {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin-top: var(--spacing-sm);
+  display: none;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ── Utility ───────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── Spinner ───────────────────────────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: var(--color-white);
+  border-radius: var(--radius-full);
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: var(--spacing-sm);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+.rsvp-footer {
+  margin-top: var(--spacing-3xl);
+  text-align: center;
+}
+
+.rsvp-footer__names {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.rsvp-footer__date {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  body {
+    padding: var(--spacing-2xl) var(--spacing-md) var(--spacing-4xl);
+  }
+
+  .card {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  .rsvp-header__names {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

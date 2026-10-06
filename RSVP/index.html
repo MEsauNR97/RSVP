@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSVP — Esau &amp; Gala</title>
+
+  <!-- Fuentes (mismas que la página de boda) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Estilos del RSVP (incluye variables del sistema de diseño de la boda) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="rsvp-header">
+    <p class="rsvp-header__eyebrow"></p>
+    <h1 class="rsvp-header__names">Esau &amp; Gala</h1>
+    <p class="rsvp-header__title">Confirma tu asistencia</p>
+    <div class="divider"><span class="divider__flower">✿</span></div>
+  </header>
+
+  <!-- PASO 1: Buscar código -->
+  <div class="card" id="search-section">
+    <h2 class="card__title">Buscar reservación</h2>
+    <div class="field-group">
+      <label class="field-label" for="codigo-input">Código de reservación</label>
+      <input type="text" id="codigo-input" placeholder="Ej. 001" maxlength="10"
+             onkeydown="if(event.key==='Enter') buscarCodigo()" />
+      <p id="search-error" class="error-msg">Código no encontrado. Verifica e intenta de nuevo.</p>
+    </div>
+    <button class="btn-buscar" onclick="buscarCodigo()">Buscar</button>
+  </div>
+
+  <!-- PASO 2: Formulario RSVP -->
+  <div class="card" id="rsvp-section">
+    <p class="familia-nombre" id="rsvp-nombre"></p>
+    <p class="familia-detalle" id="rsvp-detalle"></p>
+    <div class="divider"><span class="divider__flower">✿</span></div>
+
+    <!-- Pregunta niños (solo si tienen niños) -->
+    <div class="field-group" id="grupo-ninos" style="display:none;">
+      <label class="field-label">¿Asistirán los niños?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="ninos" value="si" onchange="actualizarDropdown()" /> Sí</label>
+        <label><input type="radio" name="ninos" value="no" onchange="actualizarDropdown()" /> No</label>
+      </div>
+    </div>
+
+    <!-- Dropdown personas -->
+    <div class="field-group" id="grupo-personas">
+      <label class="field-label">Personas que asistirán</label>
+      <select id="select-personas">
+        <option value="">— Selecciona —</option>
+      </select>
+    </div>
+
+    <button class="btn-confirmar" id="btn-confirmar" onclick="confirmar()">
+      Confirmar asistencia
+    </button>
+
+    <button class="btn-volver" onclick="volverBuscar()" style="width:100%;">
+      ← Cambiar código
+    </button>
+  </div>
+
+  <!-- PASO 3: Éxito -->
+  <div class="card" id="success-section">
+    <span class="check-icon">🎉</span>
+    <h2 class="card__title">¡Confirmación recibida!</h2>
+    <p id="success-msg"></p>
+    <button class="btn-volver" onclick="volverInicio()">Confirmar otra familia</button>
+  </div>
+
+  <footer class="rsvp-footer">
+    <p class="rsvp-footer__names">Esau &amp; Gala</p>
+    <p class="rsvp-footer__date">20 de Marzo de 2027</p>
+  </footer>
+
+  <script>
+    // ─── CONFIG ────────────────────────────────────────────────
+    // Pega aquí la URL de tu Google Apps Script Web App después de desplegarlo
+    const APPS_SCRIPT_URL = 'PEGAR_URL_AQUI';
+
+    // ─── BASE DE DATOS DE FAMILIAS ──────────────────────────────────────────
+    // Generado automáticamente por build.py — no editar a mano
+    const familias = {
+      '001': { familia: "Familia Reyes Lopez", adultos: 2, ninos: 0, extra: 0 },
+      '002': { familia: "Familia Reyes Reyes", adultos: 1, ninos: 2, extra: 1 },
+      '003': { familia: "Familia Garcia Martinez", adultos: 4, ninos: 0, extra: 0 },
+      '004': { familia: "Familia Lopez Torres", adultos: 2, ninos: 1, extra: 0 },
+    };
+    // ───────────────────────────────────────────────────────────
+
+    let familiaActual = null;
+
+    // ── Buscar código ─────────────────────────────────────────
+    function buscarCodigo() {
+      const input = document.getElementById('codigo-input').value.trim().padStart(3, '0');
+      const errEl = document.getElementById('search-error');
+      errEl.style.display = 'none';
+
+      if (!familias[input]) {
+        errEl.style.display = 'block';
+        return;
+      }
+
+      familiaActual = { codigo: input, ...familias[input] };
+      mostrarRSVP();
+    }
+
+    // ── Mostrar formulario RSVP ───────────────────────────────
+    function mostrarRSVP() {
+      const f = familiaActual;
+
+      document.getElementById('search-section').style.display = 'none';
+      document.getElementById('rsvp-section').style.display = 'block';
+
+      document.getElementById('rsvp-nombre').textContent = f.familia;
+
+      const maxTotal = f.adultos + f.ninos + f.extra;
+      let detalle = `${f.adultos} adulto${f.adultos !== 1 ? 's' : ''}`;
+      if (f.ninos > 0) detalle += ` · ${f.ninos} niño${f.ninos !== 1 ? 's' : ''}`;
+      if (f.extra > 0) detalle += ` · ${f.extra} invitado${f.extra !== 1 ? 's' : ''} extra`;
+      document.getElementById('rsvp-detalle').textContent = detalle;
+
+      // Mostrar/ocultar pregunta de niños
+      const grupoNinos = document.getElementById('grupo-ninos');
+      if (f.ninos > 0) {
+        grupoNinos.style.display = 'block';
+        // Limpiar radios
+        document.querySelectorAll('input[name="ninos"]').forEach(r => r.checked = false);
+        // Vaciar dropdown hasta que elijan
+        llenarDropdown(0);
+      } else {
+        grupoNinos.style.display = 'none';
+        llenarDropdown(f.adultos + f.extra);
+      }
+    }
+
+    // ── Actualizar dropdown según respuesta de niños ──────────
+    function actualizarDropdown() {
+      const f = familiaActual;
+      const resp = document.querySelector('input[name="ninos"]:checked');
+      if (!resp) return;
+
+      if (resp.value === 'si') {
+        llenarDropdown(f.adultos + f.ninos + f.extra);
+      } else {
+        llenarDropdown(f.adultos + f.extra);
+      }
+    }
+
+    // ── Llenar dropdown de 1 a max ────────────────────────────
+    function llenarDropdown(max) {
+      const sel = document.getElementById('select-personas');
+      sel.innerHTML = '<option value="">— Selecciona —</option>';
+      for (let i = 1; i <= max; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${i} persona${i !== 1 ? 's' : ''}`;
+        sel.appendChild(opt);
+      }
+    }
+
+    // ── Confirmar asistencia ──────────────────────────────────
+    async function confirmar() {
+      const f = familiaActual;
+      const personas = document.getElementById('select-personas').value;
+
+      if (!personas) {
+        alert('Por favor selecciona el número de personas que asistirán.');
+        return;
+      }
+
+      // Si tiene niños, verificar que eligió opción
+      if (f.ninos > 0) {
+        const resp = document.querySelector('input[name="ninos"]:checked');
+        if (!resp) {
+          alert('Por favor indica si asistirán los niños.');
+          return;
+        }
+      }
+
+      const ninosAsisten = f.ninos > 0
+        ? document.querySelector('input[name="ninos"]:checked').value === 'si'
+        : false;
+
+      const btn = document.getElementById('btn-confirmar');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+      const payload = {
+        codigo:       f.codigo,
+        familia:      f.familia,
+        personas:     parseInt(personas),
+        ninos_asisten: ninosAsisten ? 'Sí' : 'No',
+        fecha:        new Date().toLocaleString('es-MX'),
+      };
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        mostrarExito(payload);
+      } catch(err) {
+        alert('Hubo un error al enviar. Verifica tu conexión e intenta de nuevo.');
+        btn.disabled = false;
+        btn.innerHTML = 'Confirmar asistencia';
+      }
+    }
+
+    // ── Mostrar pantalla de éxito ─────────────────────────────
+    function mostrarExito(payload) {
+      document.getElementById('rsvp-section').style.display = 'none';
+      document.getElementById('success-section').style.display = 'block';
+
+      let msg = `${payload.familia} — ${payload.personas} persona${payload.personas !== 1 ? 's' : ''} confirmada${payload.personas !== 1 ? 's' : ''}.`;
+      if (familiaActual.ninos > 0) {
+        msg += ` Niños: ${payload.ninos_asisten}.`;
+      }
+      document.getElementById('success-msg').textContent = msg;
+    }
+
+    // ── Navegación ────────────────────────────────────────────
+    function volverBuscar() {
+      document.getElementById('rsvp-section').style.display = 'none';
+      document.getElementById('search-section').style.display = 'block';
+      document.getElementById('codigo-input').value = '';
+      document.getElementById('search-error').style.display = 'none';
+      familiaActual = null;
+    }
+
+    function volverInicio() {
+      document.getElementById('success-section').style.display = 'none';
+      document.getElementById('search-section').style.display = 'block';
+      document.getElementById('codigo-input').value = '';
+      // Resetear botón
+      const btn = document.getElementById('btn-confirmar');
+      btn.disabled = false;
+      btn.innerHTML = 'Confirmar asistencia';
+      familiaActual = null;
+    }
+  </script>
+
+</body>
+</html>
